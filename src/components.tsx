@@ -4,22 +4,20 @@ import {SliderProps} from 'antd/lib/slider';
 
 interface LabelSliderProps extends SliderProps {
   label: string;
-  onRangeChange?(label: string, values: [number, number]): void;
-  onValueChange?(label: string, value: number): void;
+  settings: any;
+  onValueChange?(label: string, value: any): void;
 }
 
 export class LabelSlider extends React.PureComponent<LabelSliderProps> {
-  onChange = (values: number | [number, number]) => {
-    let {label, onValueChange, onRangeChange} = this.props;
-    if (onRangeChange) {
-      onRangeChange(label, values as [number, number]);
-    } else if (onValueChange) {
-      onValueChange(label, values as number);
+  onChange = (value: number | [number, number]) => {
+    let {label, onValueChange} = this.props;
+    if (onValueChange) {
+      onValueChange(label, value);
     }
   };
 
   render() {
-    let {label, onValueChange, onRangeChange, ...p} = this.props;
-    return <Slider {...p} range={onRangeChange != null} onChange={this.onChange} />;
+    let {label, settings, onValueChange, ...p} = this.props;
+    return <Slider {...p} value={settings[label]} onChange={this.onChange} />;
   }
 }
