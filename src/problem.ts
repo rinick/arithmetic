@@ -63,6 +63,15 @@ export class Pool {
     }
     return [d(1, 9), d(1, 9)];
   }
+  get29(): [number, number] {
+    for (let pair of this.pool) {
+      if (pair[0] > 1 && pair[1] > 1) {
+        this.pool.delete(pair);
+        return pair;
+      }
+    }
+    return [d(2, 9), d(2, 9)];
+  }
   getAdd1(): [number, number] {
     for (let pair of this.pool) {
       if (pair[0] > 0 && pair[1] > 0 && pair[0] + pair[1] < 10) {
@@ -132,10 +141,7 @@ export function selectRaw(
     return [];
   }
   if (count < levels.size) {
-    console.log(maxLevel);
-    console.log([...levels.keys()].sort());
     levels = new Map(shuffle([...levels]).slice(0, count));
-    console.log([...levels.keys()].sort());
   }
   let loop = (count * 5) / levels.size;
   addProblem: for (let i = 0; i < loop; ++i) {

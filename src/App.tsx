@@ -5,8 +5,8 @@ import {Button, Radio} from 'antd';
 import {shuffle, t} from './util';
 import {selectAdd, selectSubtract} from './add';
 import debounce from 'lodash/debounce';
-import {d} from './problem';
 import {RadioChangeEvent} from 'antd/lib/radio/interface';
+import {selectDivide, selectMultiply} from './multiply';
 
 const difficultyMarks = {
   1: '1',
@@ -24,6 +24,7 @@ function moreMarks(values: number[]) {
 }
 
 const addMarks = moreMarks([1.5, 2.1, 2.4, 2.6, 3.4, 3.7]);
+const multiplyMarks = moreMarks([1.1, 1.2, 1.3, 1.5, 2.1, 2.4, 3.5]);
 
 interface Settings {
   addLevel: [number, number];
@@ -41,13 +42,13 @@ interface Settings {
 
 function loadSettings(): Settings {
   const defaultSettings: Settings = {
-    addLevel: [1, 2],
+    addLevel: [1, 1.9],
     addCount: 20,
-    subtractLevel: [1, 2],
+    subtractLevel: [1, 1.9],
     subtractCount: 4,
-    multiplyLevel: [1, 2],
+    multiplyLevel: [1.1, 1.9],
     multiplyCount: 0,
-    divideLevel: [1, 2],
+    divideLevel: [1.1, 1.9],
     divideCount: 0,
     sort: 'type',
     column: 2,
@@ -88,6 +89,8 @@ export default class App extends React.PureComponent<any, State> {
     this.problems = [
       ...shuffle(selectAdd(settings.addLevel, settings.addCount)),
       ...shuffle(selectSubtract(settings.subtractLevel, settings.subtractCount)),
+      ...shuffle(selectMultiply(settings.multiplyLevel, settings.multiplyCount)),
+      ...shuffle(selectDivide(settings.divideLevel, settings.divideCount)),
     ];
   }
 
@@ -189,7 +192,7 @@ export default class App extends React.PureComponent<any, State> {
                 min={1}
                 max={4}
                 step={0.1}
-                marks={difficultyMarks}
+                marks={multiplyMarks}
                 onValueChange={this.onValueChange}
               />
             </div>
@@ -209,7 +212,7 @@ export default class App extends React.PureComponent<any, State> {
                 min={1}
                 max={4}
                 step={0.1}
-                marks={difficultyMarks}
+                marks={multiplyMarks}
                 onValueChange={this.onValueChange}
               />
             </div>
