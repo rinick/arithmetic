@@ -1,4 +1,4 @@
-import {d, Pool, Problem} from './problem';
+import {d, Pool, Problem, selectRaw} from './problem';
 import {shuffle} from './util';
 
 class ProblemAdd10 extends Problem {
@@ -11,8 +11,7 @@ class ProblemAdd10 extends Problem {
   }
   generate(pool: Pool): [number, number] {
     let [x, y] = pool.getAdd1();
-    let result = `${x}+${y}`;
-    pool.isNew(result);
+    pool.isNew(x, y);
     return [x, y];
   }
 }
@@ -29,8 +28,7 @@ class ProblemAdd15 extends Problem {
     let x: number, y: number;
     for (let i = 0; i < 20; ++i) {
       [x, y] = pool.getAdd1p5();
-      let result = `${x}+${y}`;
-      if (pool.isNew(result)) {
+      if (pool.isNew(x, y)) {
         break;
       }
     }
@@ -48,8 +46,7 @@ class ProblemAdd20 extends Problem {
         continue;
       }
 
-      let result = `${xx}+${yy}`;
-      if (pool.isNew(result)) {
+      if (pool.isNew(xx, yy)) {
         [x, y] = [xx, yy];
         break;
       }
@@ -68,8 +65,7 @@ class ProblemAdd21 extends Problem {
         continue;
       }
 
-      let result = `${xx}+${yy}`;
-      if (pool.isNew(result)) {
+      if (pool.isNew(xx, yy)) {
         [x, y] = [xx, yy];
         break;
       }
@@ -88,8 +84,7 @@ class ProblemAdd24 extends Problem {
         continue;
       }
 
-      let result = `${xx}+${yy}`;
-      if (pool.isNew(result)) {
+      if (pool.isNew(xx, yy)) {
         [x, y] = [xx, yy];
         break;
       }
@@ -108,8 +103,7 @@ class ProblemAdd26 extends Problem {
         continue;
       }
 
-      let result = `${xx}+${yy}`;
-      if (pool.isNew(result)) {
+      if (pool.isNew(xx, yy)) {
         [x, y] = [xx, yy];
         break;
       }
@@ -136,8 +130,7 @@ class ProblemAdd30 extends Problem {
         continue;
       }
 
-      let result = `${xxx}+${yyy}`;
-      if (pool.isNew(result)) {
+      if (pool.isNew(xxx, yyy)) {
         [x, y] = [xxx, yyy];
         break;
       }
@@ -168,8 +161,7 @@ class ProblemAdd34 extends Problem {
       if (carryOver !== 2) {
         continue;
       }
-      let result = `${xxx}+${yyy}`;
-      if (pool.isNew(result)) {
+      if (pool.isNew(xxx, yyy)) {
         [x, y] = [xxx, yyy];
         break;
       }
@@ -194,8 +186,7 @@ class ProblemAdd37 extends Problem {
         continue;
       }
 
-      let result = `${xxx}+${yyy}`;
-      if (pool.isNew(result)) {
+      if (pool.isNew(xxx, yyy)) {
         [x, y] = [xxx, yyy];
         break;
       }
@@ -210,12 +201,11 @@ class ProblemAdd4 extends Problem {
     for (let i = 0; i < 20; ++i) {
       let xxxx = Math.floor(Math.random() * 1000) * 10 + x;
       let yyyy = Math.floor(Math.random() * 1000) * 10 + y;
-      if (xxxx + yyyy > 10000) {
+      if (xxxx + yyyy > 10000 || xxxx + yyyy < 1000) {
         continue;
       }
 
-      let result = `${xxxx}+${yyyy}`;
-      if (pool.isNew(result)) {
+      if (pool.isNew(xxxx, yyyy)) {
         [x, y] = [xxxx, yyyy];
         break;
       }
@@ -223,7 +213,7 @@ class ProblemAdd4 extends Problem {
     return [x, y];
   }
 }
-function selectLevel(level: number): new () => Problem {
+function selectAddLevel(level: number): new () => Problem {
   if (level < 1.5) {
     return ProblemAdd10;
   }
@@ -253,54 +243,15 @@ function selectLevel(level: number): new () => Problem {
   }
   return ProblemAdd4;
 }
-export function selectAddRaw(minLevel: number, maxLevel: number, count: number): [number, number][] {
-  // fix floating number issue
-  maxLevel += 0.01;
-
-  let typeCache: Map<any, Problem> = new Map();
-  let levels: Map<number, Problem> = new Map();
-  for (let level = minLevel; level <= maxLevel; level += 0.1) {
-    let type = selectLevel(level);
-    let p: Problem;
-    if (typeCache.has(type)) {
-      p = typeCache.get(type);
-    } else {
-      p = new type();
-      typeCache.set(type, p);
-    }
-    levels.set(level, p);
-  }
-  if (count === 0 || levels.size === 0) {
-    return [];
-  }
-  if (count < levels.size) {
-    console.log(maxLevel);
-    console.log([...levels.keys()].sort());
-    levels = new Map(shuffle([...levels]).slice(0, count));
-    console.log([...levels.keys()].sort());
-  }
-  let loop = (count * 5) / levels.size;
-  addProblem: for (let i = 0; i < loop; ++i) {
-    for (let [level, problem] of levels) {
-      if (problem.addCount()) {
-        if (--count === 0) {
-          break addProblem;
-        }
-      }
-    }
-  }
-
-  let pool = new Pool();
-
-  let result: [number, number][] = [];
-  for (let [level, problem] of levels) {
-    for (; problem.count > 0; --problem.count) {
-      result.push(problem.generate(pool));
-    }
-  }
-  return result;
-}
 
 export function selectAdd(level: [number, number], count: number): string[] {
-  return selectAddRaw(level[0], level[1], count).map((values: [number, number]) => values.join(' + ') + ' =');
+  return selectRaw(selectAddLevel, level[0], level[1], count).map(
+    (values: [number, number]) => values.join(' + ') + ' ='
+  );
+}
+
+export function selectSubtract(level: [number, number], count: number): string[] {
+  return selectRaw(selectAddLevel, level[0], level[1], count).map(
+    (values: [number, number]) => `${values[0] + values[1]} - ${values[0]} = `
+  );
 }

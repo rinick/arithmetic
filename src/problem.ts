@@ -37,11 +37,13 @@ export class Pool {
     this.pool = new Set<[number, number]>(result);
   }
 
-  isNew(str: string) {
+  isNew(a: number, b: number) {
+    let str = `${a}_${b}`;
     if (this.used.has(str)) {
       return false;
     }
     this.used.add(str);
+    this.used.add(`${b}_${a}`);
     return true;
   }
 
@@ -102,4 +104,57 @@ export class Pool {
     }
     return [0, 0];
   }
+}
+
+export function selectRaw(
+  selectLevel: (level: number) => new () => Problem,
+  minLevel: number,
+  maxLevel: number,
+  count: number
+): [number, number][] {
+  // fix floating number issue
+  maxLevel += 0.01;
+
+  let typeCache: Map<any, Problem> = new Map();
+  let levels: Map<number, Problem> = new Map();
+  for (let level = minLevel; level <= maxLevel; level += 0.1) {
+    let type = selectLevel(level);
+    let p: Problem;
+    if (typeCache.has(type)) {
+      p = typeCache.get(type);
+    } else {
+      p = new type();
+      typeCache.set(type, p);
+    }
+    levels.set(level, p);
+  }
+  if (count === 0 || levels.size === 0) {
+    return [];
+  }
+  if (count < levels.size) {
+    console.log(maxLevel);
+    console.log([...levels.keys()].sort());
+    levels = new Map(shuffle([...levels]).slice(0, count));
+    console.log([...levels.keys()].sort());
+  }
+  let loop = (count * 5) / levels.size;
+  addProblem: for (let i = 0; i < loop; ++i) {
+    for (let [level, problem] of levels) {
+      if (problem.addCount()) {
+        if (--count === 0) {
+          break addProblem;
+        }
+      }
+    }
+  }
+
+  let pool = new Pool();
+
+  let result: [number, number][] = [];
+  for (let [level, problem] of levels) {
+    for (; problem.count > 0; --problem.count) {
+      result.push(problem.generate(pool));
+    }
+  }
+  return result;
 }
