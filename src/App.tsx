@@ -100,8 +100,13 @@ export default class App extends React.PureComponent<any, State> {
       sorted = shuffle(sorted);
     }
     let children: React.ReactElement[] = [];
+    let key = 0;
     for (let str of sorted) {
-      children.push(<div className="problem">{str}</div>);
+      children.push(
+        <div key={++key} className="problem">
+          {str}
+        </div>
+      );
     }
     this.portal = ReactDOM.createPortal(
       <div

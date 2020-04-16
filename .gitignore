@@ -4,5 +4,8 @@ node_modules
 # output
 public
 /.cache
+/.parcel-cache
 /.idea
 /temp
+/yarn-error.log
+/build
