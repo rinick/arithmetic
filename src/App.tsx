@@ -1,17 +1,27 @@
-import React from 'react';
+import React, {ReactElement} from 'react';
+import ReactDOM from 'react-dom';
 import {LabelSlider} from './components';
 import {Button, Radio} from 'antd';
 import {Pool} from './problem';
+import {shuffle} from './util';
+import {selectAdd} from './add';
 
 const difficultyMarks = {
   1: '1',
-  1.5: '',
   2: '2',
-  2.5: '',
   3: '3',
-  3.5: '',
   4: '4',
 };
+
+function moreMarks(values: number[]) {
+  let marks: any = {...difficultyMarks};
+  for (let value of values) {
+    marks[value] = '';
+  }
+  return marks;
+}
+
+const addMarks = moreMarks([1.5, 2.1, 2.4, 2.6, 3.4, 3.7]);
 
 interface Settings {
   addLevel: [number, number];
@@ -22,8 +32,9 @@ interface Settings {
   multiplyCount: number;
   divideLevel: [number, number];
   divideCount: number;
-  sort: 'all' | 'type' | 'none';
+  sort: 'type' | 'random';
   column: number;
+  size: number;
 }
 
 function loadSettings(): Settings {
@@ -36,8 +47,9 @@ function loadSettings(): Settings {
     multiplyCount: 0,
     divideLevel: [1, 2],
     divideCount: 0,
-    sort: 'all',
-    column: 1,
+    sort: 'type',
+    column: 2,
+    size: 28,
   };
   return defaultSettings;
 }
@@ -46,12 +58,57 @@ interface State {
   settings: Settings;
 }
 
-export default class App extends React.Component<any, State> {
-  state = {settings: loadSettings()};
+export default class App extends React.PureComponent<any, State> {
+  portal: React.ReactPortal;
+
+  problems: string[];
+
+  constructor(props: any) {
+    super(props);
+    let settings = loadSettings();
+    this.state = {settings};
+    this.generateProblems(settings);
+    this.updatePortal(settings, false);
+  }
+
+  generateProblems(settings: Settings) {
+    this.problems = shuffle(selectAdd(settings.addLevel, settings.addCount));
+  }
+
+  updatePortal(settings: Settings, update = true) {
+    let sorted = this.problems;
+    if (settings.sort === 'random') {
+      sorted = shuffle(sorted);
+    }
+    let children: React.ReactElement[] = [];
+    for (let str of sorted) {
+      children.push(<div className="problem">{str}</div>);
+    }
+    this.portal = ReactDOM.createPortal(
+      <div className="problems" style={{columnCount: settings.column, fontSize: settings.size}}>
+        {children}
+      </div>,
+      document.querySelector('#output')
+    );
+    if (update) {
+      this.forceUpdate();
+    }
+  }
 
   onValueChange = (label: string, values: any) => {
     this.setState((state: State) => {
-      return {settings: {...state.settings, [label]: values}};
+      let settings: Settings = {...state.settings, [label]: values};
+      switch (label) {
+        case 'sort':
+        case 'column':
+        case 'size':
+          break;
+        default:
+          this.generateProblems(settings);
+      }
+      this.updatePortal(settings);
+
+      return {settings};
     });
   };
 
@@ -70,7 +127,7 @@ export default class App extends React.Component<any, State> {
               min={1}
               max={4}
               step={0.1}
-              marks={difficultyMarks}
+              marks={addMarks}
               onValueChange={this.onValueChange}
             />
           </div>
@@ -140,19 +197,20 @@ export default class App extends React.Component<any, State> {
           </div>
         </div>
         <div className="tool-foot">
-          排序 :
           <Radio.Group value={settings.sort}>
-            <Radio.Button value="all">顺序</Radio.Button>
-            <Radio.Button value="type">只打乱难度</Radio.Button>
-            <Radio.Button value="none">完全打乱</Radio.Button>
+            <Radio.Button value="type">顺序</Radio.Button>
+            <Radio.Button value="random">打乱</Radio.Button>
           </Radio.Group>
           排版 : {settings['column']}列
           <LabelSlider label="column" settings={settings} min={1} max={10} onValueChange={this.onValueChange} />
+          字体 : {settings['size']}px
+          <LabelSlider label="size" settings={settings} min={12} max={100} onValueChange={this.onValueChange} />
           <div className="spacer" />
           <Button type="primary" size="large">
             打印
           </Button>
         </div>
+        {this.portal}
       </div>
     );
   }

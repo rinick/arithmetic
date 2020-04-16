@@ -1,13 +1,13 @@
+import {shuffle} from './util';
+
 export abstract class Problem {
-  count: number;
+  count: number = 0;
   addCount(): boolean {
     ++this.count;
     return true;
   }
 
-  constructor(public level: number) {}
-
-  abstract generate(pool: Pool): string;
+  abstract generate(pool: Pool): [number, number];
 }
 
 export function d(a: number, b: number) {
@@ -22,6 +22,10 @@ export class Pool {
     let result: [number, number][] = [];
     for (let i = 0; i <= 9; ++i) {
       for (let j = i; j <= 9; ++j) {
+        if (i === 0 && Math.random() > 0.3) {
+          // less 0
+          continue;
+        }
         if (Math.random() > 0.5) {
           result.push([i, j]);
         } else {
@@ -29,24 +33,19 @@ export class Pool {
         }
       }
     }
-    for (let i = 0; i < result.length; ++i) {
-      let j = Math.floor(Math.random() * result.length);
-      if (i !== j) {
-        [result[i], result[j]] = [result[j], result[i]];
-      }
-    }
+    result = shuffle(result);
     this.pool = new Set<[number, number]>(result);
   }
 
-  exists(str: string) {
+  isNew(str: string) {
     if (this.used.has(str)) {
-      return true;
+      return false;
     }
     this.used.add(str);
-    return false;
+    return true;
   }
 
-  get09(): [number, number] {
+  getAny(): [number, number] {
     for (let pair of this.pool) {
       this.pool.delete(pair);
       return pair;
@@ -80,8 +79,27 @@ export class Pool {
         return pair;
       }
     }
-    let a = d(1, 8);
-    let b = d(a + 1, 9);
-    return [a, b - a];
+    let a = d(1, 9);
+    let b = d(10 - a, 9);
+    return [a, b];
+  }
+  getPair(rule: (a: number, b: number) => boolean): [number, number] {
+    for (let pair of this.pool) {
+      if (rule(pair[0], pair[1])) {
+        this.pool.delete(pair);
+        return pair;
+      }
+    }
+    return Pool.newPair(rule);
+  }
+  static newPair(rule: (a: number, b: number) => boolean): [number, number] {
+    for (let i = 0; i < 100; ++i) {
+      let x = d(0, 9);
+      let y = d(0, 9);
+      if (rule(x, y)) {
+        return [x, y];
+      }
+    }
+    return [0, 0];
   }
 }
