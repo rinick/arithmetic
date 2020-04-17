@@ -33,11 +33,29 @@ body {
   border: 1px solid #eee;
 }
 
-h3 {
+.config-head {
   text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
 }
-
-.tool-foot {
+.config-icon {
+  background: #bbb;
+  border-radius: 6px;
+  width: 24px;
+  height: 24px;
+  margin: 0 8px;
+  font-size: 28px;
+  color: white;
+  font-family: 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'WenQuanYi Micro Hei', monospace;
+  padding-bottom: 5px;
+  line-height: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.tool-row {
   width: 100%;
   margin: 6px;
   padding: 12px;
@@ -46,7 +64,10 @@ h3 {
   flex-wrap: wrap;
   align-items: center;
 }
-
+.tool-row .ant-input {
+  flex: 1 1 0;
+  margin-left: 12px;
+}
 .foot-group {
   display: flex;
   align-items: center;
@@ -65,14 +86,20 @@ h3 {
 .spacer {
   flex: 100 100 0;
 }
-
+.witdh100 {
+  width: 100%;
+}
 #output {
   width: 100%;
   padding: 12px;
-  font-family: 'Gamja Flower', cursive !important;
+}
+.problems-title {
+  text-align: center;
+  white-space: pre;
 }
 .problems {
   width: 100%;
+  font-family: 'Gamja Flower', cursive !important;
 }
 .problem {
   white-space: nowrap;
@@ -83,9 +110,13 @@ h3 {
   display: flex;
   align-items: center;
 }
+.ad > div {
+  text-align: right;
+  height: 100%;
+  width: 100%;
+}
 @media print {
   #app,
-  #ad,
   #footer {
     display: none;
   }

@@ -18,6 +18,8 @@ export function initLan() {
     }
     if (hasZh && !hasOther) {
       isEN = false;
+    } else {
+      isEN = true;
     }
   } else{
     isEN = true
@@ -25,6 +27,8 @@ export function initLan() {
 
   if (isEN) {
     document.querySelector('h2').innerText = 'Arithmetic';
+  } else {
+    document.querySelector('h2').innerText = '四则运算';
   }
 }
 

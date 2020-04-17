@@ -1,7 +1,7 @@
-import React, {ReactElement} from 'react';
+import React, {ChangeEvent, ReactElement} from 'react';
 import ReactDOM from 'react-dom';
 import {LabelSlider} from './components';
-import {Button, Radio} from 'antd';
+import {Button, Input, Radio} from 'antd';
 import {shuffle, t} from './util';
 import {selectAdd, selectSubtract} from './add';
 import debounce from 'lodash/debounce';
@@ -38,6 +38,7 @@ interface Settings {
   sort: 'type' | 'random';
   column: number;
   size: number;
+  title: string;
 }
 
 function loadSettings(): Settings {
@@ -53,6 +54,7 @@ function loadSettings(): Settings {
     sort: 'type',
     column: 2,
     size: 28,
+    title: '',
   };
 
   try {
@@ -71,6 +73,7 @@ export default class App extends React.PureComponent<any, State> {
   portal: React.ReactPortal;
 
   problems: string[];
+  sortedProblems: string[];
 
   save = debounce(() => {
     let {settings} = this.state;
@@ -92,29 +95,42 @@ export default class App extends React.PureComponent<any, State> {
       ...shuffle(selectMultiply(settings.multiplyLevel, settings.multiplyCount)),
       ...shuffle(selectDivide(settings.divideLevel, settings.divideCount)),
     ];
+    this.sortProblems(settings);
+  }
+  sortProblems(settings: Settings) {
+    if (settings.sort === 'random') {
+      this.sortedProblems = shuffle(this.problems);
+    } else {
+      this.sortedProblems = this.problems;
+    }
   }
 
   updatePortal(settings: Settings) {
-    let sorted = this.problems;
-    if (settings.sort === 'random') {
-      sorted = shuffle(sorted);
-    }
     let children: React.ReactElement[] = [];
     let key = 0;
-    for (let str of sorted) {
+    for (let str of this.sortedProblems) {
       children.push(
         <div key={++key} className="problem">
           {str}
         </div>
       );
     }
+    let title: React.ReactElement;
+    let style = {opacity: 1 - (settings.size - 12) / 200};
+    if (settings.title) {
+      title = (
+        <p className="problems-title" style={{...style, fontSize: Math.round(settings.size * 0.75)}}>
+          {settings.title}
+        </p>
+      );
+    }
     this.portal = ReactDOM.createPortal(
-      <div
-        className="problems"
-        style={{columnCount: settings.column, fontSize: settings.size, opacity: 1 - (settings.size - 12) / 200}}
-      >
-        {children}
-      </div>,
+      <>
+        {title}
+        <div className="problems" style={{...style, fontSize: settings.size, columnCount: settings.column}}>
+          {children}
+        </div>
+      </>,
       document.querySelector('#output')
     );
   }
@@ -123,10 +139,14 @@ export default class App extends React.PureComponent<any, State> {
     this.setState((state: State) => {
       let settings: Settings = {...state.settings, [label]: values};
       switch (label) {
-        case 'sort':
         case 'column':
         case 'size':
+        case 'title':
           break;
+        case 'sort': {
+          this.sortProblems(settings);
+          break;
+        }
         default:
           this.generateProblems(settings);
       }
@@ -139,13 +159,25 @@ export default class App extends React.PureComponent<any, State> {
   onSortChange = (e: RadioChangeEvent) => {
     this.onValueChange('sort', e.target.value);
   };
+  onTitleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    this.onValueChange('title', e.target.value);
+  };
+  print = () => {
+    if (/micromessenger/i.test(window.navigator.userAgent)) {
+      alert('微信浏览器不支持打印，试试用其他浏览器打开')
+    }
+    print();
+  };
   render() {
     let {settings} = this.state;
     return (
       <div className="tools">
         <div className="tools-group">
           <div className="config">
-            <h3>{t('Add', '加法')}</h3>
+            <div className="config-head">
+              <div className="config-icon">+</div>
+              {t('Add', '加法')}
+            </div>
             <div>
               {t('Level', '难度')} : {settings.addLevel.join(' ~ ')}
               <LabelSlider
@@ -165,7 +197,10 @@ export default class App extends React.PureComponent<any, State> {
             </div>
           </div>
           <div className="config">
-            <h3>{t('Subtract', '减法')}</h3>
+            <div className="config-head">
+              <div className="config-icon">-</div>
+              {t('Subtract', '减法')}
+            </div>
             <div>
               {t('Level', '难度')} : {settings.subtractLevel.join(' ~ ')}
               <LabelSlider
@@ -187,7 +222,10 @@ export default class App extends React.PureComponent<any, State> {
         </div>
         <div className="tools-group">
           <div className="config">
-            <h3>{t('Multiply', '乘法')}</h3>
+            <div className="config-head">
+              <div className="config-icon">×</div>
+              {t('Multiply', '乘法')}
+            </div>
             <div>
               {t('Level', '难度')} : {settings.multiplyLevel.join(' ~ ')}
               <LabelSlider
@@ -207,7 +245,10 @@ export default class App extends React.PureComponent<any, State> {
             </div>
           </div>
           <div className="config">
-            <h3>{t('Divide', '除法')}</h3>
+            <div className="config-head">
+              <div className="config-icon">÷</div>
+              {t('Divide', '除法')}
+            </div>
             <div>
               {t('Level', '难度')} : {settings.divideLevel.join(' ~ ')}
               <LabelSlider
@@ -227,7 +268,10 @@ export default class App extends React.PureComponent<any, State> {
             </div>
           </div>
         </div>
-        <div className="tool-foot">
+        <div className="tool-row">
+          <div className="foot-group witdh100">
+            {t('Print Title', '打印标题')} : <Input value={settings.title} onChange={this.onTitleChange} />
+          </div>
           <div className="foot-group ">
             {t('Columns', '排版')} : {settings['column']}
             {t('', ' 列')}
@@ -244,7 +288,7 @@ export default class App extends React.PureComponent<any, State> {
               <Radio.Button value="type">{t('Grouped', '分类')}</Radio.Button>
               <Radio.Button value="random">{t('Random Order', '打乱')}</Radio.Button>
             </Radio.Group>
-            <Button type="primary" size="large" onClick={print}>
+            <Button type="primary" size="large" onClick={this.print}>
               {t('Print', ' 打印')}
             </Button>
           </div>
