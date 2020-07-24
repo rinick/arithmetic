@@ -1,6 +1,5 @@
 import React from 'react';
-import {InputNumber, Slider} from 'antd';
-import {SliderProps} from 'antd/lib/slider';
+import Slider, {SliderProps} from 'antd/lib/slider';
 
 interface LabelSliderProps extends SliderProps {
   label: string;

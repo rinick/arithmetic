@@ -1,12 +1,15 @@
 import React, {ChangeEvent, ReactElement} from 'react';
 import ReactDOM from 'react-dom';
 import {LabelSlider} from './components';
-import {Button, Input, Radio} from 'antd';
+import Button from 'antd/lib/button';
+import Input from 'antd/lib/input';
+import Radio from 'antd/lib/radio';
 import {shuffle, t} from './util';
 import {selectAdd, selectSubtract} from './add';
 import debounce from 'lodash/debounce';
 import {RadioChangeEvent} from 'antd/lib/radio/interface';
 import {selectDivide, selectMultiply} from './multiply';
+import {select24} from './24pt';
 
 const difficultyMarks = {
   1: '1',
@@ -35,6 +38,8 @@ interface Settings {
   multiplyCount: number;
   divideLevel: [number, number];
   divideCount: number;
+  g24Level: number;
+  g24Count: number;
   sort: 'type' | 'random';
   column: number;
   size: number;
@@ -51,6 +56,8 @@ function loadSettings(): Settings {
     multiplyCount: 0,
     divideLevel: [1.1, 1.9],
     divideCount: 0,
+    g24Level: 2,
+    g24Count: 0,
     sort: 'type',
     column: 2,
     size: 28,
@@ -94,6 +101,7 @@ export default class App extends React.PureComponent<any, State> {
       ...shuffle(selectSubtract(settings.subtractLevel, settings.subtractCount)),
       ...shuffle(selectMultiply(settings.multiplyLevel, settings.multiplyCount)),
       ...shuffle(selectDivide(settings.divideLevel, settings.divideCount)),
+      ...select24(settings.g24Level, settings.g24Count),
     ];
     this.sortProblems(settings);
   }
@@ -164,7 +172,7 @@ export default class App extends React.PureComponent<any, State> {
   };
   print = () => {
     if (/micromessenger/i.test(window.navigator.userAgent)) {
-      alert('微信浏览器不支持打印，试试用其他浏览器打开')
+      alert('微信浏览器不支持打印，试试用其他浏览器打开');
     }
     print();
   };
@@ -265,6 +273,27 @@ export default class App extends React.PureComponent<any, State> {
             <div>
               {t('Count', '数量')} : {settings.divideCount}
               <LabelSlider label="divideCount" settings={settings} max={50} onValueChange={this.onValueChange} />
+            </div>
+          </div>
+          <div className="config">
+            <div className="config-head">
+              <div className="config-icon">24</div>
+              {t('24 Game', '24点')}
+            </div>
+            <div>
+              {t('Level', '难度')} : {settings.g24Level}
+              <LabelSlider
+                label="g24Level"
+                settings={settings}
+                min={1}
+                max={4}
+                marks={difficultyMarks}
+                onValueChange={this.onValueChange}
+              />
+            </div>
+            <div>
+              {t('Count', '数量')} : {settings.g24Count}
+              <LabelSlider label="g24Count" settings={settings} max={50} onValueChange={this.onValueChange} />
             </div>
           </div>
         </div>

@@ -26,6 +26,8 @@ body {
 }
 
 .config {
+  display: flex;
+  flex-direction: column;
   flex: 1;
   min-width: 308px;
   margin: 6px;
