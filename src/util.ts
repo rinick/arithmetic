@@ -21,8 +21,8 @@ export function initLan() {
     } else {
       isEN = true;
     }
-  } else{
-    isEN = true
+  } else {
+    isEN = true;
   }
 
   if (isEN) {
@@ -36,13 +36,15 @@ export function t(en: string, zh: string): string {
   return isEN ? en : zh;
 }
 
-export function shuffle(arr: any[]) {
+export function shuffle(arr: any[], maxLen: number = Infinity) {
   let result = [...arr];
-  for (let i = 0; i < result.length; ++i) {
+  let len = Math.min(result.length, maxLen);
+  for (let i = 0; i < len; ++i) {
     let j = Math.floor(Math.random() * result.length);
     if (i !== j) {
       [result[i], result[j]] = [result[j], result[i]];
     }
   }
+  result.length = len;
   return result;
 }

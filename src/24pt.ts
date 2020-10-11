@@ -1,7 +1,13 @@
 import {shuffle} from './util';
 
-// 0 need divide, 1 need multiply, 2 add minus only
-const all: number[][][] = [[], [], [], []];
+// 0 add and minus only, 1 no divide and <= 10, 2 <= 13
+const all13: string[][] = [[], [], []];
+
+// all20 unchecked
+const all20: string[] = [];
+
+const has24 = new Set<string>();
+const no24 = new Set<string>();
 
 let orders211: number[][] = [
   [0, 1, 2, 3],
@@ -51,19 +57,20 @@ function check(n: number[]) {
     count += count2;
   }
 
+  let nstr = n.join(', ');
   if (k >= 0) {
     if (k == 2) {
-      all[0].push(n);
+      all13[0].push(nstr);
     }
-    if (k <= 1 && n[3] <= 10) {
-      all[1].push(n);
+    if (k >= 1 && n[3] <= 10) {
+      all13[1].push(nstr);
     } else if (n[3] <= 13) {
-      all[2].push(n);
-    } else {
-      all[3].push(n);
+      all13[2].push(nstr);
     }
+    has24.add(nstr);
     return true;
   }
+  no24.add(nstr);
   return false;
 }
 
@@ -120,35 +127,73 @@ function check22(n: number[]): [number, number] {
   return [k, count];
 }
 
-function initData() {
+let inited13 = false;
+function init13() {
+  for (let a = 1; a <= 13; ++a)
+    for (let b = a; b <= 13; ++b)
+      for (let c = b; c <= 13; ++c)
+        for (let d = c; d <= 13; ++d) {
+          check([a, b, c, d]);
+        }
+  inited13 = true;
+}
+
+let inited20 = false;
+function init20() {
   for (let a = 1; a <= 20; ++a)
     for (let b = a; b <= 20; ++b)
       for (let c = b; c <= 20; ++c)
         for (let d = c; d <= 20; ++d) {
-          check([a, b, c, d]);
+          all20.push([a, b, c, d].join(', '));
         }
+  inited20 = true;
 }
 
-initData();
-
 export function select24(level: number, count: number) {
-  let source: number[][];
+  if (count === 0) {
+    return [];
+  }
+  if (!inited13) {
+    init13();
+  }
+  let source: string[];
   switch (level) {
     case 1:
-      source = [...all[0]];
+      source = [...all13[0]];
       break;
     case 2:
-      source = [...all[1]];
+      source = [...all13[1]];
       break;
     case 3:
-      source = [...all[1], ...all[2]];
+      source = [...all13[1], ...all13[2]];
       break;
     default:
-      source = [...all[1], ...all[2], ...all[3]];
+      if (!inited20) {
+        init20();
+      }
+      source = all20;
   }
-  source = shuffle(source);
-  if (count < source.length) {
+  source = shuffle(source, count * 2 + 20);
+
+  if (level === 4) {
+    let result: string[] = [];
+    for (let nstr of source) {
+      if (has24.has(nstr)) {
+        result.push(nstr);
+      } else if (!no24.has(nstr)) {
+        if (check(nstr.split(', ').map((s) => Number(s)))) {
+          result.push(nstr);
+        } else {
+          console.log('no');
+        }
+      }
+      if (result.length >= count) {
+        source = result;
+        break;
+      }
+    }
+  } else if (count < source.length) {
     source = source.slice(0, count);
   }
-  return source.map((n) => n.join(', ') + ' => 24');
+  return source.map((n) => n + ' => 24');
 }
