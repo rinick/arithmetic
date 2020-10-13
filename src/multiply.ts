@@ -1,4 +1,4 @@
-import {d, Pool, Problem, selectRaw} from './problem';
+import {d, PairPool, Problem, selectRaw} from './problem';
 
 class ProblemMultiply10 extends Problem {
   addCount(): boolean {
@@ -8,7 +8,7 @@ class ProblemMultiply10 extends Problem {
     ++this.count;
     return true;
   }
-  generate(pool: Pool): [number, number] {
+  generate(pool: PairPool): [number, number] {
     let [x, y] = pool.getPair((a: number, b: number) => a > 0 && b > 0 && a * b < 10);
     pool.isNew(x, y);
     return [x, y];
@@ -22,7 +22,7 @@ class ProblemMultiply11 extends Problem {
     ++this.count;
     return true;
   }
-  generate(pool: Pool): [number, number] {
+  generate(pool: PairPool): [number, number] {
     let [x, y] = pool.getPair((a: number, b: number) => a > 1 && b > 1 && (a === 2 || b === 2));
     pool.isNew(x, y);
     return [x, y];
@@ -37,7 +37,7 @@ class ProblemMultiply12 extends Problem {
     ++this.count;
     return true;
   }
-  generate(pool: Pool): [number, number] {
+  generate(pool: PairPool): [number, number] {
     let [x, y] = pool.getPair((a: number, b: number) => a > 1 && b > 1 && (a < 4 || b < 4));
     pool.isNew(x, y);
     return [x, y];
@@ -51,7 +51,7 @@ class ProblemMultiply13 extends Problem {
     ++this.count;
     return true;
   }
-  generate(pool: Pool): [number, number] {
+  generate(pool: PairPool): [number, number] {
     let [x, y] = pool.getPair((a: number, b: number) => a > 1 && b > 1 && (a < 6 || b < 6));
     pool.isNew(x, y);
     return [x, y];
@@ -66,7 +66,7 @@ class ProblemMultiply15 extends Problem {
     ++this.count;
     return true;
   }
-  generate(pool: Pool): [number, number] {
+  generate(pool: PairPool): [number, number] {
     let [x, y] = pool.get29();
     pool.isNew(x, y);
     return [x, y];
@@ -81,7 +81,7 @@ class ProblemMultiply20 extends Problem {
     ++this.count;
     return true;
   }
-  generate(pool: Pool): [number, number] {
+  generate(pool: PairPool): [number, number] {
     let [x, y] = pool.getPair((a: number, b: number) => b > 1 && a * b < 10);
     let xx: number;
     for (let i = 0; i < 20; ++i) {
@@ -99,7 +99,7 @@ class ProblemMultiply20 extends Problem {
 }
 
 class ProblemMultiply21 extends Problem {
-  generate(pool: Pool): [number, number] {
+  generate(pool: PairPool): [number, number] {
     let [x, y] = pool.getPair((a: number, b: number) => b > 1 && a * b < 10);
     let xx: number;
     for (let i = 0; i < 20; ++i) {
@@ -114,7 +114,7 @@ class ProblemMultiply21 extends Problem {
 }
 
 class ProblemMultiply24 extends Problem {
-  generate(pool: Pool): [number, number] {
+  generate(pool: PairPool): [number, number] {
     let [x, y] = pool.getPair((a: number, b: number) => b > 1 && a * b > 10);
     let xx: number;
     for (let i = 0; i < 20; ++i) {
@@ -129,7 +129,7 @@ class ProblemMultiply24 extends Problem {
 }
 
 class ProblemMultiply30 extends Problem {
-  generate(pool: Pool): [number, number] {
+  generate(pool: PairPool): [number, number] {
     let [x, y] = pool.getAny();
     let xx: number, yy: number;
     for (let i = 0; i < 20; ++i) {
@@ -146,7 +146,7 @@ class ProblemMultiply30 extends Problem {
   }
 }
 class ProblemMultiply35 extends Problem {
-  generate(pool: Pool): [number, number] {
+  generate(pool: PairPool): [number, number] {
     let [x, y] = pool.get29();
     let xx: number, yy: number;
     for (let i = 0; i < 20; ++i) {
@@ -163,7 +163,7 @@ class ProblemMultiply35 extends Problem {
   }
 }
 class ProblemMultiply40 extends Problem {
-  generate(pool: Pool): [number, number] {
+  generate(pool: PairPool): [number, number] {
     let [x, y] = pool.get29();
     let xxx: number, yyy: number;
     for (let i = 0; i < 20; ++i) {

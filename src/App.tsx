@@ -9,6 +9,7 @@ import {selectAdd, selectSubtract} from './add';
 import debounce from 'lodash/debounce';
 import {RadioChangeEvent} from 'antd/lib/radio/interface';
 import {selectDivide, selectMultiply} from './multiply';
+import {selectFraction} from './fraction';
 import {select24} from './24pt';
 
 const difficultyMarks = {
@@ -37,6 +38,8 @@ interface Settings {
   multiplyLevel: [number, number];
   multiplyCount: number;
   divideLevel: [number, number];
+  fractionLevel: number;
+  fractionCount: number;
   divideCount: number;
   g24Level: number;
   g24Count: number;
@@ -56,6 +59,8 @@ function loadSettings(): Settings {
     multiplyCount: 0,
     divideLevel: [1.1, 1.9],
     divideCount: 0,
+    fractionLevel: 1,
+    fractionCount: 0,
     g24Level: 2,
     g24Count: 0,
     sort: 'type',
@@ -79,8 +84,8 @@ interface State {
 export default class App extends React.PureComponent<any, State> {
   portal: React.ReactPortal;
 
-  problems: string[];
-  sortedProblems: string[];
+  problems: React.ReactChild[];
+  sortedProblems: React.ReactChild[];
 
   save = debounce(() => {
     let {settings} = this.state;
@@ -101,6 +106,7 @@ export default class App extends React.PureComponent<any, State> {
       ...shuffle(selectSubtract(settings.subtractLevel, settings.subtractCount)),
       ...shuffle(selectMultiply(settings.multiplyLevel, settings.multiplyCount)),
       ...shuffle(selectDivide(settings.divideLevel, settings.divideCount)),
+      ...selectFraction(settings.fractionLevel, settings.fractionCount),
       ...select24(settings.g24Level, settings.g24Count),
     ];
     this.sortProblems(settings);
@@ -275,9 +281,32 @@ export default class App extends React.PureComponent<any, State> {
               <LabelSlider label="divideCount" settings={settings} max={50} onValueChange={this.onValueChange} />
             </div>
           </div>
+        </div>
+        <div className="tools-group">
           <div className="config">
             <div className="config-head">
-              <div className="config-icon">24</div>
+              <div className="config-icon config-icon-s">½</div>
+              {t('fraction', '分数')}
+            </div>
+            <div>
+              {t('Level', '难度')} : {settings.fractionLevel}
+              <LabelSlider
+                label="fractionLevel"
+                settings={settings}
+                min={1}
+                max={4}
+                marks={difficultyMarks}
+                onValueChange={this.onValueChange}
+              />
+            </div>
+            <div>
+              {t('Count', '数量')} : {settings.fractionCount}
+              <LabelSlider label="fractionCount" settings={settings} max={50} onValueChange={this.onValueChange} />
+            </div>
+          </div>
+          <div className="config">
+            <div className="config-head">
+              <div className="config-icon config-icon-s">24</div>
               {t('24 Game', '24点')}
             </div>
             <div>

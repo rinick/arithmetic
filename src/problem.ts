@@ -7,14 +7,14 @@ export abstract class Problem {
     return true;
   }
 
-  abstract generate(pool: Pool): [number, number];
+  abstract generate(pool: PairPool): [number, number];
 }
 
 export function d(a: number, b: number) {
   return Math.floor(Math.random() * (1 + b - a)) + a;
 }
 
-export class Pool {
+export class PairPool {
   used: Set<string> = new Set<string>();
   pool: Set<[number, number]> = new Set<[number, number]>();
 
@@ -38,12 +38,12 @@ export class Pool {
   }
 
   isNew(a: number, b: number) {
-    let str = `${a}_${b}`;
+    let str = `${a.toPrecision(4)}_${b.toPrecision(4)}`;
     if (this.used.has(str)) {
       return false;
     }
     this.used.add(str);
-    this.used.add(`${b}_${a}`);
+    this.used.add(`${b.toPrecision(4)}_${a.toPrecision(4)}`);
     return true;
   }
 
@@ -101,7 +101,7 @@ export class Pool {
         return pair;
       }
     }
-    return Pool.newPair(rule);
+    return PairPool.newPair(rule);
   }
   static newPair(rule: (a: number, b: number) => boolean): [number, number] {
     for (let i = 0; i < 100; ++i) {
@@ -154,7 +154,7 @@ export function selectRaw(
     }
   }
 
-  let pool = new Pool();
+  let pool = new PairPool();
 
   let result: [number, number][] = [];
   for (let [level, problem] of levels) {

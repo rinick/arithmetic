@@ -1,4 +1,4 @@
-import {d, Pool, Problem, selectRaw} from './problem';
+import {d, PairPool, Problem, selectRaw} from './problem';
 
 class ProblemAdd10 extends Problem {
   addCount(): boolean {
@@ -8,7 +8,7 @@ class ProblemAdd10 extends Problem {
     ++this.count;
     return true;
   }
-  generate(pool: Pool): [number, number] {
+  generate(pool: PairPool): [number, number] {
     let [x, y] = pool.getAdd1();
     pool.isNew(x, y);
     return [x, y];
@@ -23,7 +23,7 @@ class ProblemAdd15 extends Problem {
     ++this.count;
     return true;
   }
-  generate(pool: Pool): [number, number] {
+  generate(pool: PairPool): [number, number] {
     let x: number, y: number;
     for (let i = 0; i < 20; ++i) {
       [x, y] = pool.getAdd1p5();
@@ -36,7 +36,7 @@ class ProblemAdd15 extends Problem {
 }
 
 class ProblemAdd20 extends Problem {
-  generate(pool: Pool): [number, number] {
+  generate(pool: PairPool): [number, number] {
     let [x, y] = pool.getPair((a, b) => a + b < 10);
     let xx: number, yy: number;
     for (let i = 0; i < 20; ++i) {
@@ -55,7 +55,7 @@ class ProblemAdd20 extends Problem {
 }
 
 class ProblemAdd21 extends Problem {
-  generate(pool: Pool): [number, number] {
+  generate(pool: PairPool): [number, number] {
     let [x, y] = pool.getAny();
     let xx: number, yy: number;
     for (let i = 0; i < 20; ++i) {
@@ -74,7 +74,7 @@ class ProblemAdd21 extends Problem {
 }
 
 class ProblemAdd24 extends Problem {
-  generate(pool: Pool): [number, number] {
+  generate(pool: PairPool): [number, number] {
     let [x, y] = pool.getPair((a, b) => a + b < 10);
     let xx: number, yy: number;
     for (let i = 0; i < 20; ++i) {
@@ -93,7 +93,7 @@ class ProblemAdd24 extends Problem {
 }
 
 class ProblemAdd26 extends Problem {
-  generate(pool: Pool): [number, number] {
+  generate(pool: PairPool): [number, number] {
     let [x, y] = pool.getAdd1p5();
     let xx: number, yy: number;
     for (let i = 0; i < 20; ++i) {
@@ -112,7 +112,7 @@ class ProblemAdd26 extends Problem {
 }
 
 class ProblemAdd30 extends Problem {
-  generate(pool: Pool): [number, number] {
+  generate(pool: PairPool): [number, number] {
     let [x, y] = pool.getAny();
     let xxx: number, yyy: number;
     for (let i = 0; i < 20; ++i) {
@@ -143,7 +143,7 @@ class ProblemAdd30 extends Problem {
 }
 
 class ProblemAdd34 extends Problem {
-  generate(pool: Pool): [number, number] {
+  generate(pool: PairPool): [number, number] {
     let [x, y] = pool.getAny();
     let xxx: number, yyy: number;
     for (let i = 0; i < 20; ++i) {
@@ -174,7 +174,7 @@ class ProblemAdd34 extends Problem {
 }
 
 class ProblemAdd37 extends Problem {
-  generate(pool: Pool): [number, number] {
+  generate(pool: PairPool): [number, number] {
     let [x, y] = pool.getAdd1p5();
     let xxx: number, yyy: number;
     for (let i = 0; i < 20; ++i) {
@@ -199,7 +199,7 @@ class ProblemAdd37 extends Problem {
 }
 
 class ProblemAdd4 extends Problem {
-  generate(pool: Pool): [number, number] {
+  generate(pool: PairPool): [number, number] {
     let [x, y] = pool.getAny();
     let xxxx: number, yyyy: number;
     for (let i = 0; i < 20; ++i) {
@@ -260,4 +260,8 @@ export function selectSubtract(level: [number, number], count: number): string[]
   return selectRaw(selectAddLevel, level[0], level[1], count).map(
     (values: [number, number]) => `${values[0] + values[1]} - ${values[0]} = `
   );
+}
+
+export function selectAddRaw(level: [number, number], count: number): number[][] {
+  return selectRaw(selectAddLevel, level[0], level[1], count);
 }

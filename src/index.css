@@ -57,6 +57,12 @@ body {
   align-items: center;
   justify-content: center;
 }
+
+.config-icon-s {
+  font-size: 16px;
+  padding-bottom: 1px;
+}
+
 .tool-row {
   width: 100%;
   margin: 6px;
@@ -99,7 +105,7 @@ body {
   text-align: center;
   white-space: pre;
 }
-.problems {
+.problems, math {
   width: 100%;
   font-family: 'Gamja Flower', cursive !important;
 }
