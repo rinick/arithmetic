@@ -105,9 +105,13 @@ body {
   text-align: center;
   white-space: pre;
 }
-.problems, math {
+.problems,
+math {
   width: 100%;
   font-family: 'Gamja Flower', cursive !important;
+}
+mfrac > * {
+  font-size: 87.5%;
 }
 .problem {
   white-space: nowrap;

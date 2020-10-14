@@ -64,7 +64,13 @@ function selectFraction1(count: number): React.ReactChild[] {
   });
 }
 
-function selectFraction2(count: number, maxAB: number, maxC: number, intPart: number = 0.9): React.ReactChild[] {
+function maybe1(n: number) {
+  if (Math.random() > 0.5) {
+    return 1;
+  }
+  return n;
+}
+function selectFraction2(count: number, maxAB: number, maxC: number, intPart: number = 1): React.ReactChild[] {
   let pool = new PairPool();
 
   let result: React.ReactChild[] = [];
@@ -79,13 +85,29 @@ function selectFraction2(count: number, maxAB: number, maxC: number, intPart: nu
       --i;
       continue;
     }
-    if (Math.random() < 0.5) {
-      [b, c] = [c, b];
-    }
+
     let ab = a * b;
     let ac = a * c;
-    let bb = Math.floor(Math.random() * intPart * ab) + 1;
-    let cc = Math.floor(Math.random() * intPart * ac) + 1;
+    let bb = Math.floor(Math.random() * maybe1(intPart) * ab) + 1;
+    let cc = Math.floor(Math.random() * maybe1(intPart) * ac) + 1;
+    if (bb % ab === 0) {
+      bb = bb >> 1;
+    }
+    if (cc % ac === 0) {
+      cc = cc >> 1;
+    }
+
+    let pollB = bb / ab;
+    let pollC = cc / ac;
+    if (!pool.isNew(pollB, pollC)) {
+      i -= 0.9;
+      continue;
+    }
+
+    if (Math.random() < 0.5) {
+      [ab, bb, ac, cc] = [ac, cc, ab, bb];
+    }
+
     result.push(
       <math>
         {buildFracAuto(bb, ab)}
@@ -105,7 +127,7 @@ export function selectFraction(level: number, count: number): React.ReactChild[]
     case 2:
       return selectFraction2(count, 5, 1);
     case 3:
-      return selectFraction2(count, 6, 6, 1);
+      return selectFraction2(count, 7, 6, 1);
     case 4:
       return selectFraction2(count, 9, 9, 9);
   }

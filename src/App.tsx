@@ -12,6 +12,8 @@ import {selectDivide, selectMultiply} from './multiply';
 import {selectFraction} from './fraction';
 import {select24} from './24pt';
 
+const isChrome = window.navigator.userAgent.includes('Chrome/');
+
 const difficultyMarks = {
   1: '1',
   2: '2',
@@ -141,7 +143,7 @@ export default class App extends React.PureComponent<any, State> {
     this.portal = ReactDOM.createPortal(
       <>
         {title}
-        <div className="problems" style={{...style, fontSize: settings.size, columnCount: settings.column}}>
+        <div className={`problems${isChrome?" chrome-math":""}`} style={{...style, fontSize: settings.size, columnCount: settings.column}}>
           {children}
         </div>
       </>,
