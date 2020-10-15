@@ -2,6 +2,7 @@ import React, {ChangeEvent, ReactElement} from 'react';
 import {d, PairPool, selectRaw} from './problem';
 import {selectAddRaw} from './add';
 import './mathml';
+import './mathml.less';
 
 function gcd(a: number, b: number) {
   if (a > b) {
