@@ -76,8 +76,8 @@ function selectFraction2(count: number, maxAB: number, maxC: number, intPart: nu
 
   let result: React.ReactChild[] = [];
   for (let i = 0; i < count; ++i) {
-    let a = d(2, 5);
-    let b = d(2, 5);
+    let a = d(2, maxAB);
+    let b = d(2, maxAB);
     let c = maxC;
     if (maxC > 2) {
       c = d(2, maxC);
@@ -91,6 +91,10 @@ function selectFraction2(count: number, maxAB: number, maxC: number, intPart: nu
     let ac = a * c;
     let bb = Math.floor(Math.random() * maybe1(intPart) * ab) + 1;
     let cc = Math.floor(Math.random() * maybe1(intPart) * ac) + 1;
+    if (gcd(bb, ab) > 1) {
+      i -= 1;
+      continue;
+    }
     if (bb % ab === 0) {
       bb = bb >> 1;
     }
@@ -126,9 +130,9 @@ export function selectFraction(level: number, count: number): React.ReactChild[]
     case 1:
       return selectFraction1(count);
     case 2:
-      return selectFraction2(count, 5, 1);
+      return selectFraction2(count, 7, 1);
     case 3:
-      return selectFraction2(count, 7, 6, 1);
+      return selectFraction2(count, 8, 6, 1);
     case 4:
       return selectFraction2(count, 9, 9, 9);
   }
