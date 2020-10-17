@@ -250,16 +250,47 @@ function selectAddLevel(level: number): new () => Problem {
   return ProblemAdd4;
 }
 
-export function selectAdd(level: [number, number], count: number): string[] {
-  return selectRaw(selectAddLevel, level[0], level[1], count).map(
-    (values: [number, number]) => values.join(' + ') + ' ='
-  );
+export function selectAdd(level: [number, number], count: number, decimal: boolean): string[] {
+  return selectRaw(selectAddLevel, level[0], level[1], count).map((values: [number, number]) => {
+    if (decimal) {
+      let [a, b] = values;
+      let d = [10, 100, 1000][(Math.random() * 3) | 0];
+
+      if (a >= d && Math.random() > 0.5) {
+        a /= d * 10;
+      } else {
+        a /= d;
+      }
+      if (b >= d && Math.random() > 0.5) {
+        b /= d * 10;
+      } else {
+        b /= d;
+      }
+
+      values = [a, b];
+    }
+    return values.join(' + ') + ' =';
+  });
 }
 
-export function selectSubtract(level: [number, number], count: number): string[] {
-  return selectRaw(selectAddLevel, level[0], level[1], count).map(
-    (values: [number, number]) => `${values[0] + values[1]} - ${values[0]} = `
-  );
+export function selectSubtract(level: [number, number], count: number, decimal: boolean): string[] {
+  return selectRaw(selectAddLevel, level[0], level[1], count).map((values: [number, number]) => {
+    let [a, b] = values;
+    b += a;
+    if (decimal) {
+      let d = [10, 100, 1000][(Math.random() * 3) | 0];
+
+      if (a >= d && Math.random() > 0.8) {
+        a /= d * 10;
+      } else {
+        a /= d;
+      }
+      b /= d;
+
+      values = [a, b];
+    }
+    return `${b} - ${a} = `;
+  });
 }
 
 export function selectAddRaw(level: [number, number], count: number): number[][] {

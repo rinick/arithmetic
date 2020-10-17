@@ -1,6 +1,6 @@
 import React, {ChangeEvent, ReactElement} from 'react';
 import ReactDOM from 'react-dom';
-import {LabelSlider} from './components';
+import {LabelSwitch, LabelSlider} from './components';
 import Button from 'antd/lib/button';
 import Input from 'antd/lib/input';
 import Radio from 'antd/lib/radio';
@@ -33,6 +33,7 @@ const addMarks = moreMarks([1.5, 2.1, 2.4, 2.6, 3.4, 3.7]);
 const multiplyMarks = moreMarks([1.1, 1.2, 1.3, 1.5, 2.1, 2.4, 3.5]);
 
 interface Settings {
+  addDecimal: boolean;
   addLevel: [number, number];
   addCount: number;
   subtractLevel: [number, number];
@@ -53,6 +54,7 @@ interface Settings {
 
 function loadSettings(): Settings {
   const defaultSettings: Settings = {
+    addDecimal: false,
     addLevel: [1, 1.9],
     addCount: 20,
     subtractLevel: [1, 1.9],
@@ -104,8 +106,8 @@ export default class App extends React.PureComponent<any, State> {
 
   generateProblems(settings: Settings) {
     this.problems = [
-      ...shuffle(selectAdd(settings.addLevel, settings.addCount)),
-      ...shuffle(selectSubtract(settings.subtractLevel, settings.subtractCount)),
+      ...shuffle(selectAdd(settings.addLevel, settings.addCount, settings.addDecimal)),
+      ...shuffle(selectSubtract(settings.subtractLevel, settings.subtractCount, settings.addDecimal)),
       ...shuffle(selectMultiply(settings.multiplyLevel, settings.multiplyCount)),
       ...shuffle(selectDivide(settings.divideLevel, settings.divideCount)),
       ...selectFraction(settings.fractionLevel, settings.fractionCount),
@@ -143,7 +145,10 @@ export default class App extends React.PureComponent<any, State> {
     this.portal = ReactDOM.createPortal(
       <>
         {title}
-        <div className={`problems${isChrome?" chrome-math":""}`} style={{...style, fontSize: settings.size, columnCount: settings.column}}>
+        <div
+          className={`problems${isChrome ? ' chrome-math' : ''}`}
+          style={{...style, fontSize: settings.size, columnCount: settings.column}}
+        >
           {children}
         </div>
       </>,
@@ -193,6 +198,14 @@ export default class App extends React.PureComponent<any, State> {
             <div className="config-head">
               <div className="config-icon">+</div>
               {t('Add', '加法')}
+              <LabelSwitch
+                label="addDecimal"
+                settings={settings}
+                onValueChange={this.onValueChange}
+                checkedChildren={t('decimal', '小数')}
+                unCheckedChildren={t('integer', '整数')}
+                style={{position: 'absolute', right: 0}}
+              />
             </div>
             <div>
               {t('Level', '难度')} : {settings.addLevel.join(' ~ ')}
@@ -216,6 +229,14 @@ export default class App extends React.PureComponent<any, State> {
             <div className="config-head">
               <div className="config-icon">-</div>
               {t('Subtract', '减法')}
+              <LabelSwitch
+                label="addDecimal"
+                settings={settings}
+                onValueChange={this.onValueChange}
+                checkedChildren={t('decimal', '小数')}
+                unCheckedChildren={t('integer', '整数')}
+                style={{position: 'absolute', right: 0}}
+              />
             </div>
             <div>
               {t('Level', '难度')} : {settings.subtractLevel.join(' ~ ')}

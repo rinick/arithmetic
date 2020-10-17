@@ -183,8 +183,6 @@ export function select24(level: number, count: number) {
       } else if (!no24.has(nstr)) {
         if (check(nstr.split(', ').map((s) => Number(s)))) {
           result.push(nstr);
-        } else {
-          console.log('no');
         }
       }
       if (result.length >= count) {

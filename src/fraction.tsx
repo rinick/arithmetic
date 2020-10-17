@@ -17,7 +17,6 @@ function gcd(a: number, b: number) {
   }
   return a;
 }
-console.log(gcd(17, 20));
 function buildFracSimple(a: number, b: number) {
   return (
     <mfrac>
@@ -31,7 +30,6 @@ function buildFracAuto(a: number, b: number) {
     return <mn>{a / b}</mn>;
   }
   let g = gcd(a, b);
-  console.log(a, b, g);
   if (a > b) {
     let m = a % b;
 
