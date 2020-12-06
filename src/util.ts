@@ -1,4 +1,5 @@
 let isEN: boolean = false;
+
 export function initLan() {
   if (window.location.hash === '#zh') {
     isEN = false;
@@ -47,4 +48,8 @@ export function shuffle(arr: any[], maxLen: number = Infinity) {
   }
   result.length = len;
   return result;
+}
+
+export function fixDecimal(n: number) {
+  return Math.round(n * 1000000) / 1000000;
 }

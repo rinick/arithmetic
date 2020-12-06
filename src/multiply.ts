@@ -1,4 +1,5 @@
 import {d, PairPool, Problem, selectRaw} from './problem';
+import {fixDecimal} from './util';
 
 class ProblemMultiply10 extends Problem {
   addCount(): boolean {
@@ -218,14 +219,28 @@ function selectMultiplyLevel(level: number): new () => Problem {
   return ProblemMultiply40;
 }
 
-export function selectMultiply(level: [number, number], count: number): string[] {
-  return selectRaw(selectMultiplyLevel, level[0], level[1], count).map(
-    (values: [number, number]) => values.join(' × ') + ' ='
-  );
+export function selectMultiply(level: [number, number], count: number, decimal: boolean): string[] {
+  return selectRaw(selectMultiplyLevel, level[0], level[1], count).map((values: [number, number]) => {
+    if (decimal) {
+      let [a, b] = values;
+      a /= [1, 10, 100, 1000][(Math.random() * 3) | 0];
+      b /= [1, 10, 100, 1000][(Math.random() * 3) | 0];
+
+      values = [a, b];
+    }
+    return values.join(' × ') + ' =';
+  });
 }
 
-export function selectDivide(level: [number, number], count: number): string[] {
-  return selectRaw(selectMultiplyLevel, level[0], level[1], count).map(
-    (values: [number, number]) => `${values[0] * values[1]} ÷ ${values[1]} = `
-  );
+export function selectDivide(level: [number, number], count: number, decimal: boolean): string[] {
+  return selectRaw(selectMultiplyLevel, level[0], level[1], count).map((values: [number, number]) => {
+    if (decimal) {
+      let [a, b] = values;
+      a /= [1, 10, 100, 1000][(Math.random() * 3) | 0];
+      b /= [1, 10, 100, 1000][(Math.random() * 3) | 0];
+
+      values = [a, b];
+    }
+    return `${fixDecimal(values[0] * values[1])} ÷ ${values[1]} = `;
+  });
 }

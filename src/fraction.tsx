@@ -110,11 +110,15 @@ function selectFraction2(count: number, maxAB: number, maxC: number, intPart: nu
     if (Math.random() < 0.5) {
       [ab, bb, ac, cc] = [ac, cc, ab, bb];
     }
+    let op = '+';
+    if (pollB > pollC && Math.random() > 0.4) {
+      op = '-';
+    }
 
     result.push(
       <math>
         {buildFracAuto(bb, ab)}
-        <mo>+</mo>
+        <mo>{op}</mo>
         {buildFracAuto(cc, ac)}
         <mo>=</mo>
       </math>

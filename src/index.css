@@ -137,3 +137,8 @@ mfrac > * {
     display: none;
   }
 }
+
+
+.ant-switch-checked {
+  background-color: #bbb;
+}

@@ -38,6 +38,7 @@ interface Settings {
   addCount: number;
   subtractLevel: [number, number];
   subtractCount: number;
+  multiplyDecimal: boolean;
   multiplyLevel: [number, number];
   multiplyCount: number;
   divideLevel: [number, number];
@@ -59,6 +60,7 @@ function loadSettings(): Settings {
     addCount: 20,
     subtractLevel: [1, 1.9],
     subtractCount: 4,
+    multiplyDecimal: false,
     multiplyLevel: [1.1, 1.9],
     multiplyCount: 0,
     divideLevel: [1.1, 1.9],
@@ -108,8 +110,8 @@ export default class App extends React.PureComponent<any, State> {
     this.problems = [
       ...shuffle(selectAdd(settings.addLevel, settings.addCount, settings.addDecimal)),
       ...shuffle(selectSubtract(settings.subtractLevel, settings.subtractCount, settings.addDecimal)),
-      ...shuffle(selectMultiply(settings.multiplyLevel, settings.multiplyCount)),
-      ...shuffle(selectDivide(settings.divideLevel, settings.divideCount)),
+      ...shuffle(selectMultiply(settings.multiplyLevel, settings.multiplyCount, settings.multiplyDecimal)),
+      ...shuffle(selectDivide(settings.divideLevel, settings.divideCount, settings.multiplyDecimal)),
       ...selectFraction(settings.fractionLevel, settings.fractionCount),
       ...select24(settings.g24Level, settings.g24Count),
     ];
@@ -262,6 +264,14 @@ export default class App extends React.PureComponent<any, State> {
             <div className="config-head">
               <div className="config-icon">×</div>
               {t('Multiply', '乘法')}
+              <LabelSwitch
+                label="multiplyDecimal"
+                settings={settings}
+                onValueChange={this.onValueChange}
+                checkedChildren={t('decimal', '小数')}
+                unCheckedChildren={t('integer', '整数')}
+                style={{position: 'absolute', right: 0}}
+              />
             </div>
             <div>
               {t('Level', '难度')} : {settings.multiplyLevel.join(' ~ ')}
@@ -285,6 +295,14 @@ export default class App extends React.PureComponent<any, State> {
             <div className="config-head">
               <div className="config-icon">÷</div>
               {t('Divide', '除法')}
+              <LabelSwitch
+                label="multiplyDecimal"
+                settings={settings}
+                onValueChange={this.onValueChange}
+                checkedChildren={t('decimal', '小数')}
+                unCheckedChildren={t('integer', '整数')}
+                style={{position: 'absolute', right: 0}}
+              />
             </div>
             <div>
               {t('Level', '难度')} : {settings.divideLevel.join(' ~ ')}
