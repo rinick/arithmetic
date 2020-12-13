@@ -100,6 +100,10 @@ function selectFraction2(count: number, maxAB: number, maxC: number, intPart: nu
       cc = cc >> 1;
     }
 
+    if (Math.random() < 0.5) {
+      [ab, bb, ac, cc] = [ac, cc, ab, bb];
+    }
+
     let pollB = bb / ab;
     let pollC = cc / ac;
     if (!pool.isNew(pollB, pollC)) {
@@ -107,9 +111,6 @@ function selectFraction2(count: number, maxAB: number, maxC: number, intPart: nu
       continue;
     }
 
-    if (Math.random() < 0.5) {
-      [ab, bb, ac, cc] = [ac, cc, ab, bb];
-    }
     let op = '+';
     if (pollB > pollC && Math.random() > 0.4) {
       op = '-';
