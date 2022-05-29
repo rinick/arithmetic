@@ -186,6 +186,7 @@ export default class App extends React.PureComponent<any, State> {
     this.onValueChange('title', e.target.value);
   };
   print = () => {
+    document.querySelectorAll('.adsbygoogle').forEach((ins) => ins.remove());
     if (/micromessenger/i.test(window.navigator.userAgent)) {
       alert('微信浏览器不支持打印，试试用其他浏览器打开');
     }
