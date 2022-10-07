@@ -225,7 +225,7 @@ export default class App extends React.PureComponent<any, State> {
             </div>
             <div>
               {t('Count', '数量')} : {settings.addCount}
-              <LabelSlider label="addCount" settings={settings} max={50} onValueChange={this.onValueChange} />
+              <LabelSlider label="addCount" settings={settings} max={100} onValueChange={this.onValueChange} />
             </div>
           </div>
           <div className="config">
@@ -256,7 +256,7 @@ export default class App extends React.PureComponent<any, State> {
             </div>
             <div>
               {t('Count', '数量')} : {settings.subtractCount}
-              <LabelSlider label="subtractCount" settings={settings} max={50} onValueChange={this.onValueChange} />
+              <LabelSlider label="subtractCount" settings={settings} max={100} onValueChange={this.onValueChange} />
             </div>
           </div>
         </div>
@@ -289,7 +289,7 @@ export default class App extends React.PureComponent<any, State> {
             </div>
             <div>
               {t('Count', '数量')} : {settings.multiplyCount}
-              <LabelSlider label="multiplyCount" settings={settings} max={50} onValueChange={this.onValueChange} />
+              <LabelSlider label="multiplyCount" settings={settings} max={100} onValueChange={this.onValueChange} />
             </div>
           </div>
           <div className="config">
@@ -320,7 +320,7 @@ export default class App extends React.PureComponent<any, State> {
             </div>
             <div>
               {t('Count', '数量')} : {settings.divideCount}
-              <LabelSlider label="divideCount" settings={settings} max={50} onValueChange={this.onValueChange} />
+              <LabelSlider label="divideCount" settings={settings} max={100} onValueChange={this.onValueChange} />
             </div>
           </div>
         </div>
@@ -343,7 +343,7 @@ export default class App extends React.PureComponent<any, State> {
             </div>
             <div>
               {t('Count', '数量')} : {settings.fractionCount}
-              <LabelSlider label="fractionCount" settings={settings} max={50} onValueChange={this.onValueChange} />
+              <LabelSlider label="fractionCount" settings={settings} max={100} onValueChange={this.onValueChange} />
             </div>
           </div>
           <div className="config">
@@ -364,7 +364,7 @@ export default class App extends React.PureComponent<any, State> {
             </div>
             <div>
               {t('Count', '数量')} : {settings.g24Count}
-              <LabelSlider label="g24Count" settings={settings} max={50} onValueChange={this.onValueChange} />
+              <LabelSlider label="g24Count" settings={settings} max={100} onValueChange={this.onValueChange} />
             </div>
           </div>
         </div>

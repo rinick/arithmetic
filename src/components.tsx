@@ -1,14 +1,14 @@
 import React from 'react';
-import Slider, {SliderProps} from 'antd/lib/slider';
+import Slider, {SliderRangeProps, SliderSingleProps} from 'antd/lib/slider';
 import Switch, {SwitchProps} from 'antd/lib/switch';
 
-interface LabelSliderProps extends SliderProps {
+interface LabelSliderProps {
   label: string;
   settings: any;
   onValueChange?(label: string, value: any): void;
 }
 
-export class LabelSlider extends React.PureComponent<LabelSliderProps> {
+export class LabelSlider extends React.PureComponent<LabelSliderProps & (SliderSingleProps | SliderRangeProps)> {
   onChange = (value: number | [number, number]) => {
     let {label, onValueChange} = this.props;
     if (onValueChange) {
