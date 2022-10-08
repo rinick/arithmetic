@@ -6,7 +6,7 @@
   "author": "Shiono Yoshihide <shiono.yoshihide@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "build": "parcel build src/index.html --out-dir build --no-source-maps --public-url ./ --no-content-hash",
+    "build": "parcel build src/index.html --out-dir docs --no-source-maps --public-url ./ --no-content-hash",
     "start": "parcel serve src/index.html --open --out-dir temp --no-source-maps",
     "test24pt": "ts-node src/24pt.ts"
   },
