@@ -111,6 +111,10 @@ math {
   width: 100%;
   font-family: 'Gamja Flower', cursive !important;
 }
+math {
+  vertical-align: middle;
+  display: inline math !important;
+}
 mfrac > * {
   font-size: 87.5%;
 }

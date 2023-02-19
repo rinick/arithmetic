@@ -2,7 +2,6 @@ import React, {ChangeEvent, ReactElement} from 'react';
 import {d, PairPool, selectRaw} from './problem';
 import {selectAddRaw} from './add';
 import './mathml';
-import './mathml.less';
 
 function gcd(a: number, b: number) {
   if (a > b) {
@@ -17,6 +16,7 @@ function gcd(a: number, b: number) {
   }
   return a;
 }
+
 function buildFracSimple(a: number, b: number) {
   return (
     <mfrac>
@@ -25,6 +25,7 @@ function buildFracSimple(a: number, b: number) {
     </mfrac>
   );
 }
+
 function buildFracAuto(a: number, b: number) {
   if (a % b === 0) {
     return <mn>{a / b}</mn>;
@@ -54,10 +55,12 @@ function selectFraction1(count: number): React.ReactChild[] {
 
     return (
       <math>
-        {buildFracSimple(values[0], base)}
-        <mo>+</mo>
-        {buildFracSimple(values[1], base)}
-        <mo>=</mo>
+        <mrow>
+          {buildFracSimple(values[0], base)}
+          <mo>+</mo>
+          {buildFracSimple(values[1], base)}
+          <mo>=</mo>
+        </mrow>
       </math>
     );
   });
@@ -69,6 +72,7 @@ function maybe1(n: number) {
   }
   return n;
 }
+
 function selectFraction2(count: number, maxAB: number, maxC: number, intPart: number = 1): React.ReactChild[] {
   let pool = new PairPool();
 
@@ -118,10 +122,12 @@ function selectFraction2(count: number, maxAB: number, maxC: number, intPart: nu
 
     result.push(
       <math>
-        {buildFracAuto(bb, ab)}
-        <mo>{op}</mo>
-        {buildFracAuto(cc, ac)}
-        <mo>=</mo>
+        <mrow>
+          {buildFracAuto(bb, ab)}
+          <mo>{op}</mo>
+          {buildFracAuto(cc, ac)}
+          <mo>=</mo>
+        </mrow>
       </math>
     );
   }
