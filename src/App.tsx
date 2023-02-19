@@ -11,6 +11,7 @@ import {RadioChangeEvent} from 'antd/lib/radio/interface';
 import {selectDivide, selectMultiply} from './multiply';
 import {selectFraction} from './fraction';
 import {select24} from './24pt';
+import {selectAddAub} from "./addsub";
 
 const isChrome = window.navigator.userAgent.includes('Chrome/');
 
@@ -19,6 +20,16 @@ const difficultyMarks = {
   2: '2',
   3: '3',
   4: '4',
+};
+
+const difficultyMarks7 = {
+  1: '1',
+  2: '2',
+  3: '3',
+  4: '4',
+  5: '5',
+  6: '6',
+  7: '7',
 };
 
 function moreMarks(values: number[]) {
@@ -47,6 +58,8 @@ interface Settings {
   divideCount: number;
   g24Level: number;
   g24Count: number;
+  addSubLevel: number;
+  addSubCount: number;
   sort: 'type' | 'random';
   column: number;
   size: number;
@@ -69,6 +82,8 @@ function loadSettings(): Settings {
     fractionCount: 0,
     g24Level: 2,
     g24Count: 0,
+    addSubLevel: 2,
+    addSubCount: 0,
     sort: 'type',
     column: 2,
     size: 28,
@@ -114,6 +129,7 @@ export default class App extends React.PureComponent<any, State> {
       ...shuffle(selectDivide(settings.divideLevel, settings.divideCount, settings.multiplyDecimal)),
       ...selectFraction(settings.fractionLevel, settings.fractionCount),
       ...select24(settings.g24Level, settings.g24Count),
+      ...selectAddAub(settings.addSubLevel, settings.addSubCount),
     ];
     this.sortProblems(settings);
   }
@@ -259,8 +275,6 @@ export default class App extends React.PureComponent<any, State> {
               <LabelSlider label="subtractCount" settings={settings} max={100} onValueChange={this.onValueChange} />
             </div>
           </div>
-        </div>
-        <div className="tools-group">
           <div className="config">
             <div className="config-head">
               <div className="config-icon">×</div>
@@ -323,8 +337,6 @@ export default class App extends React.PureComponent<any, State> {
               <LabelSlider label="divideCount" settings={settings} max={100} onValueChange={this.onValueChange} />
             </div>
           </div>
-        </div>
-        <div className="tools-group">
           <div className="config">
             <div className="config-head">
               <div className="config-icon config-icon-s">½</div>
@@ -365,6 +377,27 @@ export default class App extends React.PureComponent<any, State> {
             <div>
               {t('Count', '数量')} : {settings.g24Count}
               <LabelSlider label="g24Count" settings={settings} max={100} onValueChange={this.onValueChange} />
+            </div>
+          </div>
+          <div className="config">
+            <div className="config-head">
+              <div className="config-icon">±</div>
+              {t('Multi-Add-Sub', '多项加减')}
+            </div>
+            <div>
+              {t('Level', '难度')} : {settings.addSubLevel}
+              <LabelSlider
+                label="addSubLevel"
+                settings={settings}
+                min={1}
+                max={7}
+                marks={difficultyMarks7}
+                onValueChange={this.onValueChange}
+              />
+            </div>
+            <div>
+              {t('Count', '数量')} : {settings.addSubCount}
+              <LabelSlider label="addSubCount" settings={settings} max={100} onValueChange={this.onValueChange} />
             </div>
           </div>
         </div>
